@@ -88,6 +88,3 @@ class Lightbot:
 # several times with the same map without recreating the map each time. Also implement a destructor, as I don't know how to do so in Python.
 
 
-deneme = Lightbot("mapdata.txt", "instructions.txt")
-deneme.driver_code()
-deneme.print_final_map()
