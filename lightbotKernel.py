@@ -4,6 +4,7 @@ class Lightbot:
         self.columns, self.rows, self.x, self.y, self.z, self.direction = self.read_map_info(map_info_input)  # Read data from input files. columns and rows are map data. x, y, z are initial coordinates.
         self.terrain_light_info = [[False for _ in range(self.rows)] for _ in range(self.columns)]  #   Direction is an array in form (x,y) which represents which block the lightbot is "looking" at.
         self.terrain_depth_info = [[0 for _ in range(self.rows)] for _ in range(self.columns)]
+        self.terrain_color_info = [[False for _ in range(self.rows)] for _ in range(self.columns)] # Initializes full gray array
         self.read_terrain_depth_info(map_info_input)
         self.instructions = self.read_instructions(instruction_input)
 
@@ -24,6 +25,16 @@ class Lightbot:
                 for j in range(self.rows):
                     if i * self.rows + j < len(depth_info):
                         self.terrain_depth_info[i][j] = int(depth_info[i * self.rows + j])
+
+    def read_terrain_color_info(self, map_info_input):
+        with open(map_info_input, 'r') as file:
+            lines = file.readlines()
+            color_info = lines[4].strip().split(',')
+
+            for i in range(self.columns):
+                for j in range(self.rows):
+                    if i * self.rows + j < len(color_info):
+                        self.terrain_color_info[i][j] = bool(color_info[i * self.rows + j])
 
     def read_instructions(self, instruction_input):
         with open(instruction_input, 'r') as file:
@@ -54,7 +65,7 @@ class Lightbot:
     #  If not at the edges, executes the code. Replaces the coordinates with the coord. of the block Lightbot is looking at.
     #  Keeps the relative distance same between Lightbot and the block it is looking
     def move_forward(self):
-        if (self.direction[0] <= self.columns & self.direction[1] <= self.rows & self.direction[0] >= 0 & self.direction[1] >= 0 & self.terrain_depth_info[dir_x][dir_y] == terrain_depth_info[self.x][self.y]):
+        if (self.direction[0] <= self.columns & self.direction[1] <= self.rows & self.direction[0] >= 0 & self.direction[1] >= 0):
             tmp_x = self.direction[0]
             tmp_y = self.direction[1]
             self.x = self.direction[0]
@@ -86,5 +97,3 @@ class Lightbot:
             print(" ".join(map(str, row)))
 # In the future, I plan to seperate the map initialization and instructions. First you initialize the map, then you give the instructions. This way, you can play the game
 # several times with the same map without recreating the map each time. Also implement a destructor, as I don't know how to do so in Python.
-
-
